@@ -143,3 +143,14 @@ function loadPlaylist() {
         console.log("Saved playlist (names):", songNames);
     }
 }
+
+document.addEventListener('keydown', (e) => {
+    if (e.code === 'Space') {
+        e.preventDefault(); // Prevent default spacebar action (e.g., scrolling)
+        if (audio.paused) {
+            playSong();
+        } else {
+            pauseSong();
+        }
+    }
+});
