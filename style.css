@@ -13,12 +13,15 @@ body {
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     display: flex;
+    flex-wrap: wrap; /* Allow items to wrap to the next line */
+    max-width: 600px; /* Set a max-width for the player container */
     overflow: hidden;
 }
 
 .player {
     padding: 20px;
-    width: 300px;
+    flex: 1; /* Allow player to grow and shrink */
+    min-width: 300px; /* Minimum width for the player */
 }
 
 .album-art {
@@ -68,7 +71,9 @@ body {
 
 #volume-slider {
     width: 100px;
+    cursor: pointer;
 }
+
 
 .progress-container {
     background-color: #e0e0e0;
@@ -86,7 +91,8 @@ body {
 }
 
 .playlist-container {
-    width: 250px;
+    flex: 1; /* Allow playlist to grow and shrink */
+    min-width: 250px; /* Minimum width for the playlist */
     border-left: 1px solid #eee;
     padding: 20px;
     overflow-y: auto;

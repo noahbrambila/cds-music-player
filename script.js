@@ -96,6 +96,7 @@ nextBtn.addEventListener('click', () => {
 
 volumeSlider.addEventListener('input', (e) => {
     audio.volume = e.target.value;
+    console.log('Volume changed to:', e.target.value);
 });
 
 audio.addEventListener('timeupdate', () => {
