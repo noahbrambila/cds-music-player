@@ -154,3 +154,9 @@ document.addEventListener('keydown', (e) => {
         }
     }
 });
+
+document.body.addEventListener('mousemove', (e) => {
+    const x = e.clientX;
+    const y = e.clientY;
+    document.body.style.background = `radial-gradient(circle at ${x}px ${y}px, #6d00bd, #28004D)`;
+});
