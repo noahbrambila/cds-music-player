@@ -57,6 +57,13 @@ body {
     border: none;
     cursor: pointer;
     font-size: 24px;
+    padding: 0;
+    line-height: 1;
+}
+
+.controls button svg {
+    width: 24px;
+    height: 24px;
 }
 
 #volume-slider {
