@@ -68,6 +68,7 @@ body {
 
 #volume-slider {
     width: 100px;
+    cursor: pointer;
 }
 
 .progress-container {
