@@ -1,11 +1,13 @@
 body {
-    font-family: sans-serif;
-    background-color: #f0f0f0;
+    font-family: 'Lato', Georgia;
     display: flex;
+    background: radial-gradient(circle at 50% 50%, #6d00bd, #28004D); /* Initial deeper gradient */
     justify-content: center;
     align-items: center;
-    height: 100vh;
     margin: 0;
+    padding: 20px; /* Add padding around the player container */
+    box-sizing: border-box; /* Include padding in element's total width and height */
+    overflow-y: auto; /* Enable vertical scrolling */
 }
 
 .player-container {
@@ -13,20 +15,27 @@ body {
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     display: flex;
+    flex-wrap: wrap; /* Allow items to wrap to the next line */
+    max-width: 600px; /* Set a max-width for the player container */
     overflow: hidden;
 }
 
 .player {
     padding: 20px;
-    width: 300px;
+    flex: 1; /* Allow player to grow and shrink */
+    min-width: 300px; /* Minimum width for the player */
 }
 
 .album-art {
-    width: 100%;
-    height: 200px;
+    width: 50%;
+    padding-bottom: 50%; /* 1:1 Aspect Ratio */
     background-color: #e0e0e0;
     border-radius: 5px;
     margin-bottom: 20px;
+    background-size: contain; /* Ensure the image fits within the container */
+    background-repeat: no-repeat;
+    background-position: center;
+    margin: 0 auto;
 }
 
 .song-info {
@@ -35,14 +44,15 @@ body {
 }
 
 .song-title {
-    font-size: 18px;
-    font-weight: bold;
+    font-size: 24px;
+    font-weight: 700; /* Lato Bold */
     margin-bottom: 5px;
 }
 
 .artist {
     font-size: 14px;
     color: #888;
+    font-weight: 400; /* Lato Regular */
 }
 
 .controls {
@@ -68,7 +78,17 @@ body {
 
 #volume-slider {
     width: 100px;
+    cursor: pointer;
 }
+
+.control-btn svg {
+    stroke: #888; /* Default grey color for icons */
+}
+
+.control-btn.active svg {
+    stroke: #007bff; /* Blue color when active/shuffling */
+}
+
 
 .progress-container {
     background-color: #e0e0e0;
@@ -86,7 +106,8 @@ body {
 }
 
 .playlist-container {
-    width: 250px;
+    flex: 1; /* Allow playlist to grow and shrink */
+    min-width: 250px; /* Minimum width for the playlist */
     border-left: 1px solid #eee;
     padding: 20px;
     overflow-y: auto;
@@ -102,6 +123,7 @@ body {
     padding: 10px;
     cursor: pointer;
     border-bottom: 1px solid #eee;
+    font-weight: 400; /* Lato Regular */
 }
 
 .playlist li:hover {

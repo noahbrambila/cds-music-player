@@ -2,6 +2,7 @@ const fileInput = document.getElementById('file-input');
 const prevBtn = document.getElementById('prev-btn');
 const playBtn = document.getElementById('play-btn');
 const nextBtn = document.getElementById('next-btn');
+const shuffleBtn = document.getElementById('shuffle-btn');
 const volumeSlider = document.getElementById('volume-slider');
 const progressBar = document.querySelector('.progress-bar');
 const progressContainer = document.querySelector('.progress-container');
@@ -13,6 +14,8 @@ const albumArt = document.querySelector('.album-art');
 let audio = new Audio();
 let songs = [];
 let currentSongIndex = 0;
+let isShuffling = false;
+let shuffledSongs = [];
 
 fileInput.addEventListener('change', (e) => {
     songs = Array.from(e.target.files);
@@ -66,12 +69,12 @@ function loadSong(index) {
 
 function playSong() {
     audio.play();
-    playBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg>`;
+    playBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`;
 }
 
 function pauseSong() {
     audio.pause();
-    playBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`;
+    playBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>`;
 }
 
 playBtn.addEventListener('click', () => {
@@ -82,26 +85,70 @@ playBtn.addEventListener('click', () => {
     }
 });
 
+shuffleBtn.addEventListener('click', () => {
+    isShuffling = !isShuffling;
+    if (isShuffling) {
+        shuffleBtn.classList.add('active');
+        shuffledSongs = [...songs].sort(() => Math.random() - 0.5);
+        // Ensure the current song is in the shuffled list and set its index
+        const currentSong = songs[currentSongIndex];
+        const shuffledIndex = shuffledSongs.findIndex(song => song === currentSong);
+        if (shuffledIndex !== -1) {
+            currentSongIndex = shuffledIndex;
+        } else {
+            // If current song not found (e.g., new playlist), start from beginning of shuffled list
+            currentSongIndex = 0;
+        }
+    } else {
+        shuffleBtn.classList.remove('active');
+        // Revert to original order and find the index of the current song
+        const currentSong = shuffledSongs[currentSongIndex];
+        currentSongIndex = songs.findIndex(song => song === currentSong);
+        if (currentSongIndex === -1) {
+            currentSongIndex = 0; // Fallback if not found
+        }
+    }
+    loadSong(currentSongIndex);
+    playSong();
+});
+
 prevBtn.addEventListener('click', () => {
-    currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+    const activeSongs = isShuffling ? shuffledSongs : songs;
+    currentSongIndex = (currentSongIndex - 1 + activeSongs.length) % activeSongs.length;
     loadSong(currentSongIndex);
     playSong();
 });
 
 nextBtn.addEventListener('click', () => {
-    currentSongIndex = (currentSongIndex + 1) % songs.length;
+    const activeSongs = isShuffling ? shuffledSongs : songs;
+    currentSongIndex = (currentSongIndex + 1) % activeSongs.length;
     loadSong(currentSongIndex);
     playSong();
 });
 
 volumeSlider.addEventListener('input', (e) => {
     audio.volume = e.target.value;
+    console.log('Volume changed to:', e.target.value);
 });
 
 audio.addEventListener('timeupdate', () => {
     const { currentTime, duration } = audio;
     const progressPercent = (currentTime / duration) * 100;
     progressBar.style.width = `${progressPercent}%`;
+});
+
+audio.addEventListener('ended', () => {
+    if (isShuffling) {
+        const activeSongs = shuffledSongs;
+        currentSongIndex = (currentSongIndex + 1) % activeSongs.length;
+        loadSong(currentSongIndex);
+        playSong();
+    } else {
+        // If not shuffling, play the next song in the original order
+        currentSongIndex = (currentSongIndex + 1) % songs.length;
+        loadSong(currentSongIndex);
+        playSong();
+    }
 });
 
 progressContainer.addEventListener('click', (e) => {
@@ -117,7 +164,15 @@ function updatePlaylist() {
         const li = document.createElement('li');
         li.textContent = song.name.replace(/\.[^/.]+$/, "");
         li.addEventListener('click', () => {
-            currentSongIndex = index;
+            currentSongIndex = index; // When clicking a song, always use its original index
+            if (isShuffling) {
+                // If shuffling is active, find the clicked song in the shuffled list
+                const clickedSong = songs[index];
+                currentSongIndex = shuffledSongs.findIndex(s => s === clickedSong);
+                if (currentSongIndex === -1) {
+                    currentSongIndex = 0; // Fallback
+                }
+            }
             loadSong(currentSongIndex);
             playSong();
         });
@@ -142,3 +197,20 @@ function loadPlaylist() {
         console.log("Saved playlist (names):", songNames);
     }
 }
+
+document.addEventListener('keydown', (e) => {
+    if (e.code === 'Space') {
+        e.preventDefault(); // Prevent default spacebar action (e.g., scrolling)
+        if (audio.paused) {
+            playSong();
+        } else {
+            pauseSong();
+        }
+    }
+});
+
+document.body.addEventListener('mousemove', (e) => {
+    const x = e.clientX;
+    const y = e.clientY;
+    document.body.style.background = `radial-gradient(circle at ${x}px ${y}px, #4B0082, #28004D)`;
+});
