@@ -80,6 +80,14 @@ body {
     cursor: pointer;
 }
 
+.control-btn svg {
+    stroke: #888; /* Default grey color for icons */
+}
+
+.control-btn.active svg {
+    stroke: #007bff; /* Blue color when active/shuffling */
+}
+
 
 .progress-container {
     background-color: #e0e0e0;
