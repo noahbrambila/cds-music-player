@@ -1,6 +1,7 @@
 body {
     font-family: 'Lato', Georgia;
     display: flex;
+    background: radial-gradient(circle at 50% 50%, #6d00bd, #28004D); /* Initial deeper gradient */
     justify-content: center;
     align-items: center;
     margin: 0;
