@@ -1,4 +1,4 @@
-# CDS Music Player (1.0)
+# CDS Music Player (v1.1)
 ### Created by CarpeDiem Studios, an *innovating* company.
  
 This is a revamped version of a previously created music player made by myself, Noah Brambila.
